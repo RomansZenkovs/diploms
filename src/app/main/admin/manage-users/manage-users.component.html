@@ -1,0 +1,42 @@
+<br>
+
+<h2 class="host--section-title">{{ 'adminPortal.manageUsersTitle' | translate }}</h2>
+
+<p class="host--section-description">{{ 'adminPortal.manageUsersDescription' | translate }}</p>
+
+<br>
+
+<div class="users">
+
+  <ng-container *ngIf="service.userPermissions$ | async;else loadingUserPermissions">
+    <mat-card *ngFor="let userPermission of service.userPermissions$ | async;">
+      <mat-card-content *ngIf="userPermission.user as user">
+        <img class="card--image" [src]="user.photoURL" [alt]="user.uid">
+        <div class="card--data">
+          <p class="card--data-label">{{ 'adminPortal.nameLabel' | translate }}</p>
+          <p>{{ user.displayName }}</p>
+          <p class="card--data-label">{{ 'adminPortal.emailLabel' | translate }}</p>
+          <p>{{ user.email }}</p>
+          <p class="card--data-label">Firebase Id</p>
+          <p>{{ userPermission.uid }}</p>
+          <p class="card--data-label">{{ 'adminPortal.creationTimeLabel' | translate }}</p>
+          <p>{{ userPermission.creationTime | firebaseDate }}</p>
+          <p class="card--data-label">{{ 'adminPortal.lastSignInTimeLabel' | translate }}</p>
+          <p>{{ userPermission.lastSignInTime | firebaseDate }}</p>
+          <p class="card--data-label">{{ 'adminPortal.adminPortalAccessLabel' | translate }}</p>
+          <p>{{ (userPermission.admin ? 'adminPortal.hasAccessValueText' : 'adminPortal.hasNoAccessValueText') | translate }}</p>
+          <ng-container *ngIf="userPermission.requestTimestamp">
+            <p class="card--data-label">{{ 'adminPortal.adminAccessRequestTitle' | translate }}</p>
+            <button mat-raised-button color="accent" (click)="service.allowAccessToAdminPortal(userPermission.uid)">{{ 'adminPortal.allowButtonText' | translate }}</button>
+          </ng-container>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+  <ng-template #loadingUserPermissions>
+    <div class="users--pending">
+      <mat-spinner color="primary"></mat-spinner>
+    </div>
+  </ng-template>
+
+</div>

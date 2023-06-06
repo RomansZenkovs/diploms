@@ -1,0 +1,42 @@
+<ng-container *ngIf="service.authState.currentUser$ | async as currentUser">
+
+  <div class="host--image">
+    <img [src]="currentUser.photoURL" [alt]="currentUser.displayName">
+  </div>
+  
+  <div class="host--content">
+  
+    <p class="host--content-section-title">{{ 'manageProfile.title' | translate }}</p>
+
+    <p class="host--content-label">{{ 'manageProfile.email' | translate }}</p>
+    <p class="host--content-data">{{ currentUser?.email }}</p>
+  
+    <p class="host--content-label">{{ 'manageProfile.fullnameLabel' | translate }}</p>
+    <p class="host--content-data">{{ currentUser?.displayName }}</p>
+  
+    <ng-container *ngIf="currentUser?.metadata?.creationTime">
+      <p class="host--content-label">{{ 'manageProfile.registrationDateLabel' | translate }}</p>
+      <p class="host--content-data">{{ currentUser?.metadata?.creationTime | firebaseDate }}</p>
+    </ng-container>
+
+    <ng-container *ngIf="currentUser?.metadata?.lastSignInTime">
+      <p class="host--content-label">{{ 'manageProfile.lastSignInLabel' | translate }}</p>
+      <p class="host--content-data">{{ currentUser?.metadata?.lastSignInTime | firebaseDate }}</p>
+    </ng-container>
+  
+    <mat-divider></mat-divider>
+    
+    <p class="host--content-section-title">{{ 'manageProfile.adminAccessTitle' | translate }}</p>
+
+    <ng-container *ngIf="service.admin$ | async;else nonAdmin">
+      <p class="host--content-section-description">{{ 'manageProfile.adminAccessDescription' | translate }}</p>
+      <button mat-raised-button color="primary" routerLink="/admin">{{ 'manageProfile.adminAccessActionButtonText' | translate }}</button>
+    </ng-container>
+    <ng-template #nonAdmin>
+      <p class="host--content-section-description">{{ 'manageProfile.requestAdminDescription' | translate }}</p>
+      <button mat-raised-button color="primary" [disabled]="service.requestSent" (click)="service.requestAdminAccess()">{{ 'manageProfile.requestAdminActionButtonText' | translate }}</button>
+    </ng-template>
+
+  </div>
+
+</ng-container>

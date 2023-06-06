@@ -1,0 +1,101 @@
+<ng-container *ngIf="service.authenticated$ | async">
+  <mat-toolbar class="toolbar mat-elevation-z1" color="primary">
+    <mat-toolbar class="toolbar--content" color="primary">
+    
+      <ng-container *ngIf="service.adminPortal$ | async;else defaultAppTitle">
+        <span class="toolbar--app-name" routerLink="/admin">{{ 'toolbar.admin.title' | translate }}</span>
+      </ng-container>
+      <ng-template #defaultAppTitle>
+        <span class="toolbar--app-name" routerLink="/">Cuisine Connect</span>
+      </ng-template>
+  
+      <ng-container *ngIf="service.authState.currentUser$ | async as currentUser">
+
+        <ng-container *ngIf="service.adminPortal$ | async;else defaultAppNavigations">
+          <button mat-button routerLink="/admin">{{ 'toolbar.admin.option1' | translate }}</button>
+          <button mat-button routerLink="/admin/manage-cuisines">{{ 'toolbar.admin.option2' | translate }}</button>
+          <button mat-button routerLink="/admin/manage-recipes">{{ 'toolbar.admin.option3' | translate }}</button>
+          <button mat-button routerLink="/admin/manage-users">{{ 'toolbar.admin.option4' | translate }}</button>
+        </ng-container>
+        <ng-template #defaultAppNavigations>
+          <button mat-button routerLink="/">{{ 'toolbar.option1' | translate }}</button>
+          <button mat-button routerLink="/search-dish">{{ 'toolbar.option2' | translate }}</button>
+          <button mat-button routerLink="/add-recipe">{{ 'toolbar.option3' | translate }}</button>
+        </ng-template>
+
+  
+        <div class="toolbar--actions">
+          <div
+            class="toolbar--image-button"
+            [matMenuTriggerFor]="userMenu"
+            #userMenuTrigger="matMenuTrigger">
+            <img [src]="currentUser.photoURL" alt="user-image" height="45" width="45">
+            <mat-icon>arrow_drop_{{ userMenuTrigger.menuOpen ? 'up' : 'down' }}</mat-icon>
+          </div>
+          <div
+            matRipple
+            class="toolbar--language"
+            [matMenuTriggerFor]="languageMenu"
+            #languageMenuTrigger="matMenuTrigger">
+            <span>{{ (service.language$ | async) | uppercase }}</span>
+            <mat-icon>language</mat-icon>
+          </div>
+        </div>
+
+        <mat-menu 
+          xPosition="before"
+          #userMenu="matMenu">
+          <ng-container *ngIf="service.adminPortal$ | async;else defaultMenuSwitch">
+            <button mat-menu-item routerLink="/">
+              <mat-icon>autorenew</mat-icon>
+              <span>{{ 'toolbar.admin.menuOption1' | translate }}</span>
+            </button>
+            <button mat-menu-item (click)="service.logout()">
+              <mat-icon>logout</mat-icon>
+              <span>{{ 'toolbar.admin.menuOption2' | translate }}</span>
+            </button>
+          </ng-container>
+          <ng-template #defaultMenuSwitch>
+            <button mat-menu-item routerLink="/manage-profile">
+              <mat-icon>person</mat-icon>
+              <span>{{ 'toolbar.menuOption1' | translate }}</span>
+            </button>
+            <button mat-menu-item routerLink="/admin" *ngIf="service.admin$ | async">
+              <mat-icon>admin_panel_settings</mat-icon>
+              <span>{{ 'toolbar.menuOption2' | translate }}</span>
+            </button>
+            <button mat-menu-item (click)="service.logout()">
+              <mat-icon>logout</mat-icon>
+              <span>{{ 'toolbar.menuOption3' | translate }}</span>
+            </button>
+          </ng-template>
+        </mat-menu>
+
+        <mat-menu 
+          xPosition="before"
+          #languageMenu="matMenu">
+          <button mat-menu-item (click)="service.changeLanguage('en')">English</button>
+          <button mat-menu-item (click)="service.changeLanguage('lv')">Latvian</button>
+          <button mat-menu-item (click)="service.changeLanguage('ru')">Russian</button>
+        </mat-menu>
+
+      </ng-container>
+  
+    </mat-toolbar>
+  </mat-toolbar>
+</ng-container>
+
+<div class="root" [ngClass]="{ authenticated: service.authenticated$ | async }">
+  <div class="root--content">
+    <div class="root--content-outlet">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="root--content-footer" *ngIf="service.authenticated$ | async">
+      <p>©2023 <span routerLink="/">Cuisine Connect.</span> {{ 'footer.text1' | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="root--content-footer auth" *ngIf="!(service.authenticated$ | async)">
+  <p>©2023 <span routerLink="/">Cuisine Connect.</span> {{ 'footer.text1' | translate }}</p>
+</div>

@@ -1,0 +1,99 @@
+<br>
+
+<div class="page--section-head">
+  <h2 class="page--section-title">{{ (update ? 'addRecipe.updateTitle' : 'addRecipe.addTitle') | translate }}</h2>
+</div>
+
+<br>
+
+<form (ngSubmit)="update ? updateRecipe() : addRecipe()" [formGroup]="service.form">
+  
+  <div>
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.dishNameInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="dishName">
+    </mat-form-field>
+  
+    <ng-container *ngIf="value.imageUrl;else blankImageUrl">
+      <img class="form--image" [src]="value.imageUrl" [alt]="value.dishName">
+    </ng-container>
+    <ng-template #blankImageUrl>
+      <div class="form--empty-image">
+        <mat-icon>image</mat-icon>
+      </div>
+    </ng-template>
+  
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.imageUrlInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="imageUrl">
+    </mat-form-field>
+
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.cookingTimeInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="cookingTime">
+      <mat-hint>{{ 'addRecipe.cookingTimeInputHint' | translate }}</mat-hint>
+    </mat-form-field>
+  </div>
+  
+  <div>
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.cookingStepsInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="cookingSteps" (keydown.enter)="service.updateCookingStep()">
+      <button matSuffix mat-button color="accent" (click)="service.updateCookingStep()" type="button">
+        <span>{{ 'addRecipe.addButtonText' | translate }}</span>
+      </button>
+    </mat-form-field>
+
+    <ng-container *ngIf="service.hasCookingSteps;else noCookingStepsEntered">
+      <ol><li *ngFor="let item of service.cookingSteps$$ | async;let i = index">
+        <p>{{ item }}<mat-icon (click)="service.updateCookingStep(i)">delete</mat-icon></p>
+      </li></ol>
+    </ng-container>
+    <ng-template #noCookingStepsEntered>
+      <ol><li>{{ 'addRecipe.addACookingStepMessage' | translate }}</li></ol>
+    </ng-template>
+  
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.ingredientsInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="ingredients" (keydown.enter)="service.updateIngredients()">
+      <button matSuffix mat-button color="accent" (click)="service.updateIngredients()" type="button">
+        <span>{{ 'addRecipe.addButtonText' | translate }}</span>
+      </button>
+    </mat-form-field>
+
+    <ng-container *ngIf="service.hasIngredients;else noIngredientsEntered">
+      <ul><li *ngFor="let item of service.ingredients$$ | async;let i = index">
+        <p>{{ item }}<mat-icon (click)="service.updateIngredients(i)">delete</mat-icon></p>
+      </li></ul>
+    </ng-container>
+    <ng-template #noIngredientsEntered>
+      <ul><li>{{ 'addRecipe.addAnIngredientMessage' | translate }}</li></ul>
+    </ng-template>
+  
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.nutritionalValueInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="nutritionalValue" (keydown.enter)="service.updateNutritionalValue()">
+      <button matSuffix mat-button color="accent" (click)="service.updateNutritionalValue()" type="button">
+        <span>{{ 'addRecipe.addButtonText' | translate }}</span>
+      </button>
+    </mat-form-field>
+
+    <ng-container *ngIf="service.hasNutritionalValue;else noNutritionalValueEntered">
+      <ul><li *ngFor="let item of service.nutritionalValue$$ | async;let i = index">
+        <p>{{ item }}<mat-icon (click)="service.updateNutritionalValue(i)">delete</mat-icon></p>
+      </li></ul>
+    </ng-container>
+    <ng-template #noNutritionalValueEntered>
+      <ul><li>{{ 'addRecipe.addANutritionalValueMessage' | translate }}</li></ul>
+    </ng-template>
+
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'addRecipe.calorieContentInputLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="calorieContent">
+      <mat-hint>{{ 'addRecipe.calorieContentSampleMessage' | translate }}</mat-hint>
+    </mat-form-field>
+
+    <button mat-raised-button type="submit">{{ (update ? 'addRecipe.updateRecipeButtonText' : 'addRecipe.addRecipeButtonText') | translate }}</button>
+  </div>
+
+</form>

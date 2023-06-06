@@ -1,0 +1,41 @@
+<br>
+
+<div class="page--section-head">
+  <h2 class="page--section-title">{{ (update ? 'adminPortal.updateCuisineCategoryTitle' : 'adminPortal.addCuisineCategoryTitle') | translate }}</h2>
+</div>
+
+<br>
+
+<form (ngSubmit)="update ? updateCuisine() : addCuisine()" [formGroup]="service.form">
+  
+  <div>
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'adminPortal.cuisineNameLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="title">
+    </mat-form-field>
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'adminPortal.descriptionLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="details">
+    </mat-form-field>
+  </div>
+  
+  <div>
+  
+    <ng-container *ngIf="value.photo;else blankImageUrl">
+      <img class="form--image" [src]="value.photo" [alt]="value.title">
+    </ng-container>
+    <ng-template #blankImageUrl>
+      <div class="form--empty-image">
+        <mat-icon>image</mat-icon>
+      </div>
+    </ng-template>
+  
+    <mat-form-field color="primary" appearance="outline">
+      <mat-label>{{ 'adminPortal.imageUrlLabel' | translate }}</mat-label>
+      <input matInput type="text" formControlName="photo">
+    </mat-form-field>
+
+    <button mat-raised-button type="submit">{{ (update ? 'adminPortal.updateCuisineButtonText' : 'adminPortal.addCuisineButtonText') | translate }}</button>
+  </div>
+
+</form>
